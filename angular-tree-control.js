@@ -1,6 +1,10 @@
-/* commonjs package manager support (eg componentjs) */
+/**
+ * Link to GitHub - https://github.com/wajda/angular-tree-control
+ */
+
+// commonjs package manager support (eg componentjs)
 if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
-  module.exports = 'treeControl';
+    module.exports = 'treeControl';
 }
 (function ( angular ) {
     'use strict';
@@ -19,7 +23,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
             return _path;
         }
     }
-    
+
     angular.module( 'treeControl', [] )
         .constant('treeConfig', {
             templateUrl: null
@@ -39,12 +43,12 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 else
                     return "";
             }
-            
+
             function ensureDefault(obj, prop, value) {
                 if (!obj.hasOwnProperty(prop))
                     obj[prop] = value;
             }
-            
+
             return {
                 restrict: 'EA',
                 require: "treecontrol",
@@ -101,6 +105,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                         return true;
                     }
 
+                    $scope.depth = 0;
                     $scope.options = $scope.options || {};
                     ensureDefault($scope.options, "multiSelection", false);
                     ensureDefault($scope.options, "nodeChildren", "children");
@@ -118,7 +123,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                     ensureDefault($scope.options, "isLeaf", defaultIsLeaf);
                     ensureDefault($scope.options, "allowDeselect", true);
                     ensureDefault($scope.options, "isSelectable", defaultIsSelectable);
-                  
+
                     $scope.selectedNodes = $scope.selectedNodes || [];
                     $scope.expandedNodes = $scope.expandedNodes || [];
                     $scope.expandedNodesMap = {};
@@ -186,8 +191,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                             var parentNode = (transcludedScope.$parent.node === transcludedScope.synteticRoot)?null:transcludedScope.$parent.node;
                             var path = createPath(transcludedScope);
                             $scope.onNodeToggle({node: transcludedScope.node, $parentNode: parentNode, $path: path,
-                              $index: transcludedScope.$index, $first: transcludedScope.$first, $middle: transcludedScope.$middle,
-                              $last: transcludedScope.$last, $odd: transcludedScope.$odd, $even: transcludedScope.$even, expanded: expanding});
+                                $index: transcludedScope.$index, $first: transcludedScope.$first, $middle: transcludedScope.$middle,
+                                $last: transcludedScope.$last, $odd: transcludedScope.$odd, $even: transcludedScope.$even, expanded: expanding});
 
                         }
                     };
@@ -236,8 +241,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                                 var parentNode = (transcludedScope.$parent.node === transcludedScope.synteticRoot)?null:transcludedScope.$parent.node;
                                 var path = createPath(transcludedScope)
                                 $scope.onSelection({node: selectedNode, selected: selected, $parentNode: parentNode, $path: path,
-                                  $index: transcludedScope.$index, $first: transcludedScope.$first, $middle: transcludedScope.$middle,
-                                  $last: transcludedScope.$last, $odd: transcludedScope.$odd, $even: transcludedScope.$even});
+                                    $index: transcludedScope.$index, $first: transcludedScope.$first, $middle: transcludedScope.$middle,
+                                    $last: transcludedScope.$last, $odd: transcludedScope.$odd, $even: transcludedScope.$even});
                             }
                         }
                     };
@@ -260,11 +265,11 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
                     //tree template
                     $scope.isReverse = function() {
-                      return !($scope.reverseOrder === 'false' || $scope.reverseOrder === 'False' || $scope.reverseOrder === '' || $scope.reverseOrder === false);
+                        return !($scope.reverseOrder === 'false' || $scope.reverseOrder === 'False' || $scope.reverseOrder === '' || $scope.reverseOrder === false);
                     };
 
                     $scope.orderByFunc = function() {
-                      return $scope.orderBy;
+                        return $scope.orderBy;
                     };
 //                    return "" + $scope.orderBy;
 
@@ -379,6 +384,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 restrict: 'E',
                 require: "^treecontrol",
                 link: function( scope, element, attrs, treemodelCntr) {
+                    scope.depth += 1;
                     // Rendering template for the current node
                     treemodelCntr.template(scope, function(clone) {
                         element.html('').append(clone);
@@ -412,6 +418,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                     // create a scope for the transclusion, whos parent is the parent of the tree control
                     scope.transcludeScope = scope.parentScopeOfTree.$new();
                     scope.transcludeScope.node = scope.node;
+                    scope.transcludeScope.depth = scope.depth;
                     scope.transcludeScope.$path = createPath(scope);
                     scope.transcludeScope.$parentNode = (scope.$parent.node === scope.synteticRoot)?null:scope.$parent.node;
                     scope.transcludeScope.$index = scope.$index;
